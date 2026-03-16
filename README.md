@@ -1,45 +1,79 @@
 ```mermaid
 classDiagram
-    class Usuario {
-        +String id
-        +String nome
-        +LocalDate dataNascimento
-        +int numeroDependentes
-        +isMaiorDe60Anos() boolean
-    }
 
-    class Produto {
-        +String codigo
-        +String descricao
-        +int quantidadeEstoque
-        +double precoUnitario
-        +Categoria categoria
-    }
+%% =========================
+%% CONFIG
+%% =========================
+namespace config {
+    class DataInitializer
+}
 
-    class Categoria {
-        <<enumeration>>
-        ALIMENTICIO
-        AUTOMOTIVO
-        BEBIDA_ALCOOLICA
-        OUTRO
-    }
+%% =========================
+%% MODEL (DOMAIN)
+%% =========================
+namespace model {
+    class Usuario
+    class Produto
+    class Categoria
+    class Venda
+    class ItemVenda
+}
 
-    class Venda {
-        +String id
-        +Usuario usuario
-        +List~ItemVenda~ itens
-        +double valorTotal
-        +calcularValorTotal() double
-    }
+%% =========================
+%% REPOSITORY
+%% =========================
+namespace repository {
+    class UsuarioRepository
+    class UsuarioRepositoryImpl
+    class ProdutoRepository
+    class ProdutoRepositoryImpl
+    class VendaRepository
+    class VendaRepositoryImpl
+    class ItemVendaRepository
+    class ItemVendaRepositoryImpl
+}
 
-    class ItemVenda {
-        +String id
-        +Produto produto
-        +int quantidade
-    }
+%% =========================
+%% SERVICE
+%% =========================
+namespace service {
+    class VendaService
+    class ImpostoService
+}
 
-    Usuario "1" --> "*" Venda : vende
-    Venda "1" --> "*" ItemVenda : contém
-    ItemVenda "*" --> "1" Produto : refere
-    Produto --> Categoria : categorizado
+%% =========================
+%% APP
+%% =========================
+class App
+
+%% =========================
+%% RELAÇÕES DOMAIN
+%% =========================
+Usuario "1" --> "*" Venda
+Venda "1" --> "*" ItemVenda
+ItemVenda "*" --> "1" Produto
+Produto --> Categoria
+
+%% =========================
+%% SERVICE -> REPOSITORY
+%% =========================
+VendaService --> VendaRepository
+VendaService --> ItemVendaRepository
+VendaService --> ProdutoRepository
+VendaService --> UsuarioRepository
+VendaService --> ImpostoService
+
+%% =========================
+%% REPOSITORY IMPLEMENTAÇÃO
+%% =========================
+UsuarioRepository <|.. UsuarioRepositoryImpl
+ProdutoRepository <|.. ProdutoRepositoryImpl
+VendaRepository <|.. VendaRepositoryImpl
+ItemVendaRepository <|.. ItemVendaRepositoryImpl
+
+%% =========================
+%% APP
+%% =========================
+App --> VendaService
+App --> DataInitializer
 ```
